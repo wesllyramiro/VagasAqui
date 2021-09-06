@@ -20,11 +20,13 @@ namespace VA.Infrastructure.Data.Configurations
 
             builder
                 .HasOne(p => p.Empresa)
-                .WithMany(p => p.Vagas);
+                .WithMany(p => p.Vagas)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder
                 .HasOne(p => p.Senioridade)
-                .WithOne(p => p.Vaga);
+                .WithOne(p => p.Vaga)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

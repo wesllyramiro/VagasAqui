@@ -1,27 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using VA.Domain;
 using VA.Infrastructure.Extensions;
 
 namespace VA.Infrastructure.Data
 {
-    public class ApplicationContext : DbContext
+    public class ApplicationContext : IdentityDbContext<IdentityUser, IdentityRole, string>
     {
+        public ApplicationContext(DbContextOptions options) : base(options){ }
+
         public DbSet<Estado> Estado { get; set; }
+        public DbSet<Candidato> Candidato { get; set; }
+        public DbSet<Empresa> Empresa { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            const string strConnection = "Server=localhost,1433;Database=vagas_aqui;User ID=sa;Password=1q2w3e4r@#$";
-
-            optionsBuilder
-                .UseSqlServer(strConnection, o => o.EnableRetryOnFailure())
-                .LogTo(Console.WriteLine, LogLevel.Information)
-                .EnableSensitiveDataLogging();
-        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder
                 .ApplyConfigurationsFromAssembly(typeof(ApplicationContext).Assembly);
 

@@ -13,7 +13,7 @@ namespace VA.Domain
         public int SenioridadeId { get; set; }
         public Senioridade Senioridade { get; set; }
 
-        public ICollection<Candidato> Candidato { get; set; }
+        public ICollection<Candidato> Candidatos { get; set; }
         public ICollection<Like> Likes { get; set; }
     }
 }

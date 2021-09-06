@@ -20,7 +20,8 @@ namespace VA.Infrastructure.Data.Configurations
 
             builder
                 .HasOne(p => p.Perfil)
-                .WithMany(p => p.Experiencias);
+                .WithMany(p => p.Experiencias)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
