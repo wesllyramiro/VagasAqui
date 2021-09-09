@@ -20,6 +20,7 @@
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
 		<PackageReference Include="NetDevPack.Security.Jwt" Version="5.0.16" />
 		<PackageReference Include="NetDevPack.Security.Jwt.Store.EntityFrameworkCore" Version="5.0.16" />
+		<PackageReference Include="NetDevPack.Security.JwtExtensions" Version="5.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
