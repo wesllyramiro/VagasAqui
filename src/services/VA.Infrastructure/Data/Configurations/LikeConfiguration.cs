@@ -10,13 +10,11 @@ namespace VA.Infrastructure.Data.Configurations
         {
             builder
                 .HasOne(p => p.Perfil)
-                .WithMany(p => p.Likes)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(p => p.Likes);
 
             builder
                 .HasOne(p => p.Vaga)
-                .WithMany(p => p.Likes)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(p => p.Likes);
         }
     }
 }

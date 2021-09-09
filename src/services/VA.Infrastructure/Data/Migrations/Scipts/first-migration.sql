@@ -11,7 +11,7 @@ GO
 BEGIN TRANSACTION;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [asp_net_roles] (
         [id] varchar(900) NOT NULL,
@@ -23,7 +23,7 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [asp_net_users] (
         [id] varchar(900) NOT NULL,
@@ -46,7 +46,7 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [estado] (
         [id] int NOT NULL IDENTITY,
@@ -60,7 +60,37 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
+BEGIN
+    CREATE TABLE [refresh_tokens] (
+        [id] uniqueidentifier NOT NULL,
+        [username] varchar(max) NULL,
+        [token] uniqueidentifier NOT NULL,
+        [expiration_date] datetime2 NOT NULL,
+        CONSTRAINT [pk_refresh_tokens] PRIMARY KEY ([id])
+    );
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
+BEGIN
+    CREATE TABLE [security_keys] (
+        [id] uniqueidentifier NOT NULL,
+        [parameters] varchar(max) NULL,
+        [key_id] varchar(max) NULL,
+        [type] varchar(max) NULL,
+        [jws_algorithm] varchar(max) NULL,
+        [jwe_algorithm] varchar(max) NULL,
+        [jwe_encryption] varchar(max) NULL,
+        [creation_date] datetime2 NOT NULL,
+        [jwk_type] int NOT NULL,
+        [is_revoked] bit NOT NULL,
+        CONSTRAINT [pk_security_keys] PRIMARY KEY ([id])
+    );
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [senioridade] (
         [id] int NOT NULL IDENTITY,
@@ -74,12 +104,11 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [usuario] (
         [id] int NOT NULL IDENTITY,
         [email] varchar(100) NOT NULL,
-        [senha] varchar(50) NOT NULL,
         [usuario_criacao] int NULL,
         [cadastrado_em] datetime2 NULL,
         [usuario_alteracao] int NULL,
@@ -89,7 +118,7 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [asp_net_role_claims] (
         [id] int NOT NULL IDENTITY,
@@ -97,12 +126,12 @@ BEGIN
         [claim_type] varchar(max) NULL,
         [claim_value] varchar(max) NULL,
         CONSTRAINT [pk_asp_net_role_claims] PRIMARY KEY ([id]),
-        CONSTRAINT [fk_asp_net_role_claims_asp_net_roles_role_id] FOREIGN KEY ([role_id]) REFERENCES [asp_net_roles] ([id]) ON DELETE CASCADE
+        CONSTRAINT [fk_asp_net_role_claims_asp_net_roles_role_id] FOREIGN KEY ([role_id]) REFERENCES [asp_net_roles] ([id]) ON DELETE NO ACTION
     );
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [asp_net_user_claims] (
         [id] int NOT NULL IDENTITY,
@@ -110,12 +139,12 @@ BEGIN
         [claim_type] varchar(max) NULL,
         [claim_value] varchar(max) NULL,
         CONSTRAINT [pk_asp_net_user_claims] PRIMARY KEY ([id]),
-        CONSTRAINT [fk_asp_net_user_claims_asp_net_users_user_id] FOREIGN KEY ([user_id]) REFERENCES [asp_net_users] ([id]) ON DELETE CASCADE
+        CONSTRAINT [fk_asp_net_user_claims_asp_net_users_user_id] FOREIGN KEY ([user_id]) REFERENCES [asp_net_users] ([id]) ON DELETE NO ACTION
     );
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [asp_net_user_logins] (
         [login_provider] varchar(900) NOT NULL,
@@ -123,24 +152,24 @@ BEGIN
         [provider_display_name] varchar(max) NULL,
         [user_id] varchar(900) NOT NULL,
         CONSTRAINT [pk_asp_net_user_logins] PRIMARY KEY ([login_provider], [provider_key]),
-        CONSTRAINT [fk_asp_net_user_logins_asp_net_users_user_id] FOREIGN KEY ([user_id]) REFERENCES [asp_net_users] ([id]) ON DELETE CASCADE
+        CONSTRAINT [fk_asp_net_user_logins_asp_net_users_user_id] FOREIGN KEY ([user_id]) REFERENCES [asp_net_users] ([id]) ON DELETE NO ACTION
     );
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [asp_net_user_roles] (
         [user_id] varchar(900) NOT NULL,
         [role_id] varchar(900) NOT NULL,
         CONSTRAINT [pk_asp_net_user_roles] PRIMARY KEY ([user_id], [role_id]),
-        CONSTRAINT [fk_asp_net_user_roles_asp_net_roles_role_id] FOREIGN KEY ([role_id]) REFERENCES [asp_net_roles] ([id]) ON DELETE CASCADE,
-        CONSTRAINT [fk_asp_net_user_roles_asp_net_users_user_id] FOREIGN KEY ([user_id]) REFERENCES [asp_net_users] ([id]) ON DELETE CASCADE
+        CONSTRAINT [fk_asp_net_user_roles_asp_net_roles_role_id] FOREIGN KEY ([role_id]) REFERENCES [asp_net_roles] ([id]) ON DELETE NO ACTION,
+        CONSTRAINT [fk_asp_net_user_roles_asp_net_users_user_id] FOREIGN KEY ([user_id]) REFERENCES [asp_net_users] ([id]) ON DELETE NO ACTION
     );
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [asp_net_user_tokens] (
         [user_id] varchar(900) NOT NULL,
@@ -148,12 +177,12 @@ BEGIN
         [name] varchar(900) NOT NULL,
         [value] varchar(max) NULL,
         CONSTRAINT [pk_asp_net_user_tokens] PRIMARY KEY ([user_id], [login_provider], [name]),
-        CONSTRAINT [fk_asp_net_user_tokens_asp_net_users_user_id] FOREIGN KEY ([user_id]) REFERENCES [asp_net_users] ([id]) ON DELETE CASCADE
+        CONSTRAINT [fk_asp_net_user_tokens_asp_net_users_user_id] FOREIGN KEY ([user_id]) REFERENCES [asp_net_users] ([id]) ON DELETE NO ACTION
     );
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [cidade] (
         [id] int NOT NULL IDENTITY,
@@ -169,7 +198,7 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [empresa] (
         [id] int NOT NULL IDENTITY,
@@ -185,7 +214,7 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [perfil] (
         [id] int NOT NULL IDENTITY,
@@ -206,7 +235,7 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [vaga] (
         [id] int NOT NULL IDENTITY,
@@ -226,7 +255,7 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [experiencia] (
         [id] int NOT NULL IDENTITY,
@@ -245,7 +274,7 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [habilidade] (
         [id] int NOT NULL IDENTITY,
@@ -261,7 +290,7 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [pagina] (
         [id] int NOT NULL IDENTITY,
@@ -278,7 +307,7 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [candidato] (
         [id] int NOT NULL IDENTITY,
@@ -295,7 +324,7 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE TABLE [like] (
         [id] int NOT NULL IDENTITY,
@@ -312,136 +341,136 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_asp_net_role_claims_role_id] ON [asp_net_role_claims] ([role_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [role_name_index] ON [asp_net_roles] ([normalized_name]) WHERE [normalized_name] IS NOT NULL');
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_asp_net_user_claims_user_id] ON [asp_net_user_claims] ([user_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_asp_net_user_logins_user_id] ON [asp_net_user_logins] ([user_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_asp_net_user_roles_role_id] ON [asp_net_user_roles] ([role_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [email_index] ON [asp_net_users] ([normalized_email]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [user_name_index] ON [asp_net_users] ([normalized_user_name]) WHERE [normalized_user_name] IS NOT NULL');
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_candidato_perfil_id] ON [candidato] ([perfil_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_candidato_vaga_id] ON [candidato] ([vaga_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_cidade_estado_id] ON [cidade] ([estado_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_empresa_cidade_id] ON [empresa] ([cidade_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_experiencia_perfil_id] ON [experiencia] ([perfil_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_habilidade_perfil_id] ON [habilidade] ([perfil_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_like_perfil_id] ON [like] ([perfil_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_like_vaga_id] ON [like] ([vaga_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE UNIQUE INDEX [ix_pagina_empresa_id] ON [pagina] ([empresa_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_pagina_perfil_id] ON [pagina] ([perfil_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_perfil_cidade_id] ON [perfil] ([cidade_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE UNIQUE INDEX [ix_perfil_usuario_id] ON [perfil] ([usuario_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE INDEX [ix_vaga_empresa_id] ON [vaga] ([empresa_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     CREATE UNIQUE INDEX [ix_vaga_senioridade_id] ON [vaga] ([senioridade_id]);
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210906215759_first-migration')
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210908223350_Init')
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20210906215759_first-migration', N'5.0.9');
+    VALUES (N'20210908223350_Init', N'5.0.9');
 END;
 GO
 

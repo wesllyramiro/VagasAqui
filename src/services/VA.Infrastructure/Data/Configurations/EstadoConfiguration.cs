@@ -15,8 +15,7 @@ namespace VA.Infrastructure.Data.Configurations
 
             builder
                 .HasMany(o => o.Cidades)
-                .WithOne(c => c.Estado)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithOne(c => c.Estado);
         }
     }
 }

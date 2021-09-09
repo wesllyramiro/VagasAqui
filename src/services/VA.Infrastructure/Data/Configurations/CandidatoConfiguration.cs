@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 using VA.Domain;
 
 namespace VA.Infrastructure.Data.Configurations
@@ -11,13 +10,11 @@ namespace VA.Infrastructure.Data.Configurations
         {
             builder
                 .HasOne(p => p.Perfil)
-                .WithMany(p => p.Candidaturas)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(p => p.Candidaturas);
 
             builder
                 .HasOne(p => p.Vaga)
-                .WithMany(p => p.Candidatos)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(p => p.Candidatos);
         }
     }
 }

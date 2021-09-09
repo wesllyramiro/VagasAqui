@@ -1,12 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace VA.Infrastructure.Extensions
 {
-    public static class SnakeCaseExtensions
+    public static class ModelBuilderExtensions
     {
-        public static void ToSnakeCaseNames(this ModelBuilder modelBuilder)
+        public static ModelBuilder ToVarchar(this ModelBuilder modelBuilder)
+        {
+            var properties = modelBuilder.Model.GetEntityTypes()
+                .SelectMany(p => p.GetProperties())
+                .Where(p => p.ClrType == typeof(string)
+                        && p.GetColumnType() == null);
+
+            foreach (var property in properties)
+            {
+                property.SetIsUnicode(false);
+            }
+
+            return modelBuilder;
+        }
+
+        public static ModelBuilder ToSnakeCaseNames(this ModelBuilder modelBuilder)
         {
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {
@@ -40,6 +56,17 @@ namespace VA.Infrastructure.Extensions
                     index.SetDatabaseName(indexName);
                 }
             }
+
+            return modelBuilder;
+        }
+        public static ModelBuilder ToDeleteRestrict(this ModelBuilder modelBuilder)
+        {
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
+            return modelBuilder;
         }
 
         //UserId -> user_id

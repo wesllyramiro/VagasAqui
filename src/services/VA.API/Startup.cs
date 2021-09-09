@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using VA.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace VA.API
 {
@@ -33,7 +33,7 @@ namespace VA.API
                 .AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
-            services.DependencyInjectionInfrastructure();
+            services.AddInfrastructure();
 
             services.AddSwaggerGen(c =>
             {
@@ -64,9 +64,7 @@ namespace VA.API
 
             app.UseRouting();
 
-            app.UseAuthentication();
-
-            app.UseAuthorization();
+            app.UseInfrastructure();
 
             app.UseEndpoints(endpoints =>
             {

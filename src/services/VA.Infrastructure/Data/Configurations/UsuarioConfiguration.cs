@@ -12,11 +12,6 @@ namespace VA.Infrastructure.Data.Configurations
                 .Property(p => p.Email)
                 .HasMaxLength(100)
                 .IsRequired();
-
-            builder
-                .Property(p => p.Senha)
-                .HasMaxLength(50)
-                .IsRequired();
         }
     }
 }

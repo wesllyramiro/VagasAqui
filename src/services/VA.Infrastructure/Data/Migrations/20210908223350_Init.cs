@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace VA.Infrastructure.Data.Migrations
 {
-    public partial class firstmigration : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -64,6 +64,40 @@ namespace VA.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "refresh_tokens",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    username = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    token = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    expiration_date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_refresh_tokens", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "security_keys",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    parameters = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    key_id = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    type = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    jws_algorithm = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    jwe_algorithm = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    jwe_encryption = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    creation_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    jwk_type = table.Column<int>(type: "int", nullable: false),
+                    is_revoked = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_security_keys", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "senioridade",
                 columns: table => new
                 {
@@ -87,7 +121,6 @@ namespace VA.Infrastructure.Data.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     email = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    senha = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     usuario_criacao = table.Column<int>(type: "int", nullable: true),
                     cadastrado_em = table.Column<DateTime>(type: "datetime2", nullable: true),
                     usuario_alteracao = table.Column<int>(type: "int", nullable: true),
@@ -116,7 +149,7 @@ namespace VA.Infrastructure.Data.Migrations
                         column: x => x.role_id,
                         principalTable: "asp_net_roles",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -137,7 +170,7 @@ namespace VA.Infrastructure.Data.Migrations
                         column: x => x.user_id,
                         principalTable: "asp_net_users",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -157,7 +190,7 @@ namespace VA.Infrastructure.Data.Migrations
                         column: x => x.user_id,
                         principalTable: "asp_net_users",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -175,13 +208,13 @@ namespace VA.Infrastructure.Data.Migrations
                         column: x => x.role_id,
                         principalTable: "asp_net_roles",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_asp_net_user_roles_asp_net_users_user_id",
                         column: x => x.user_id,
                         principalTable: "asp_net_users",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -201,7 +234,7 @@ namespace VA.Infrastructure.Data.Migrations
                         column: x => x.user_id,
                         principalTable: "asp_net_users",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -604,6 +637,12 @@ namespace VA.Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "pagina");
+
+            migrationBuilder.DropTable(
+                name: "refresh_tokens");
+
+            migrationBuilder.DropTable(
+                name: "security_keys");
 
             migrationBuilder.DropTable(
                 name: "asp_net_roles");

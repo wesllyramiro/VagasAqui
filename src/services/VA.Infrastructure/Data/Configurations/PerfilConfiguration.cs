@@ -29,13 +29,11 @@ namespace VA.Infrastructure.Data.Configurations
 
             builder
                 .HasOne(p => p.Cidade)
-                .WithMany(p => p.Perfils)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(p => p.Perfils);
 
             builder
                 .HasOne(p => p.Usuario)
-                .WithOne(p => p.Perfil)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithOne(p => p.Perfil);
         }
     }
 }

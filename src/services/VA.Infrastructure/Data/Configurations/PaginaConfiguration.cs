@@ -10,13 +10,11 @@ namespace VA.Infrastructure.Data.Configurations
         {
             builder
                 .HasOne(p => p.Empresa)
-                .WithOne(p => p.Pagina)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithOne(p => p.Pagina);
 
             builder
                 .HasOne(p => p.Perfil)
-                .WithMany(p => p.Paginas)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(p => p.Paginas);
         }
     }
 }

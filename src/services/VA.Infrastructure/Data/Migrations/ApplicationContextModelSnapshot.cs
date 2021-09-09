@@ -292,6 +292,61 @@ namespace VA.Infrastructure.Data.Migrations
                     b.ToTable("asp_net_user_tokens");
                 });
 
+            modelBuilder.Entity("NetDevPack.Security.Jwt.Model.SecurityKeyWithPrivate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("creation_date");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_revoked");
+
+                    b.Property<string>("JweAlgorithm")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("jwe_algorithm");
+
+                    b.Property<string>("JweEncryption")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("jwe_encryption");
+
+                    b.Property<int>("JwkType")
+                        .HasColumnType("int")
+                        .HasColumnName("jwk_type");
+
+                    b.Property<string>("JwsAlgorithm")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("jws_algorithm");
+
+                    b.Property<string>("KeyId")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("key_id");
+
+                    b.Property<string>("Parameters")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("parameters");
+
+                    b.Property<string>("Type")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_security_keys");
+
+                    b.ToTable("security_keys");
+                });
+
             modelBuilder.Entity("VA.Domain.Candidato", b =>
                 {
                     b.Property<int>("Id")
@@ -785,13 +840,6 @@ namespace VA.Infrastructure.Data.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("email");
 
-                    b.Property<string>("Senha")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("senha");
-
                     b.Property<int?>("UsuarioAlteracao")
                         .HasColumnType("int")
                         .HasColumnName("usuario_alteracao");
@@ -869,13 +917,39 @@ namespace VA.Infrastructure.Data.Migrations
                     b.ToTable("vaga");
                 });
 
+            modelBuilder.Entity("VA.Infrastructure.Data.Identity.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("expiration_date");
+
+                    b.Property<Guid>("Token")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("token");
+
+                    b.Property<string>("Username")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("username");
+
+                    b.HasKey("Id")
+                        .HasName("pk_refresh_tokens");
+
+                    b.ToTable("refresh_tokens");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .HasConstraintName("fk_asp_net_role_claims_asp_net_roles_role_id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -885,7 +959,7 @@ namespace VA.Infrastructure.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .HasConstraintName("fk_asp_net_user_claims_asp_net_users_user_id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -895,7 +969,7 @@ namespace VA.Infrastructure.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .HasConstraintName("fk_asp_net_user_logins_asp_net_users_user_id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -905,14 +979,14 @@ namespace VA.Infrastructure.Data.Migrations
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .HasConstraintName("fk_asp_net_user_roles_asp_net_roles_role_id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .HasConstraintName("fk_asp_net_user_roles_asp_net_users_user_id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -922,7 +996,7 @@ namespace VA.Infrastructure.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .HasConstraintName("fk_asp_net_user_tokens_asp_net_users_user_id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

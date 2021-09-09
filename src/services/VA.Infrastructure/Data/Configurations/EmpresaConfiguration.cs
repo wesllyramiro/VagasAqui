@@ -15,8 +15,7 @@ namespace VA.Infrastructure.Data.Configurations
 
             builder
                 .HasOne(p => p.Cidade)
-                .WithMany(p => p.Empresas)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(p => p.Empresas);
         }
     }
 }
