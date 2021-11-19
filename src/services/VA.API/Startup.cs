@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using VA.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using VA.Application;
 
 namespace VA.API
 {
@@ -33,7 +34,8 @@ namespace VA.API
                 .AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
-            services.AddInfrastructure(typeof(Startup).Assembly);
+            services.AddInfrastructure();
+            services.AddApplication();
 
             services.AddSwaggerGen(c =>
             {

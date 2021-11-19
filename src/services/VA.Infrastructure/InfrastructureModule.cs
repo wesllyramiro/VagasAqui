@@ -20,12 +20,12 @@ namespace VA.Infrastructure
 {
     public static class InfrastructureModule
     {
-        public static void AddInfrastructure(this IServiceCollection services, Assembly assembly) 
+        public static void AddInfrastructure(this IServiceCollection services) 
         {
             services
                 .AddApplicationDbContext()
                 .AddIdentity()
-                .AddMediator(assembly)
+                .AddMediator()
                 .AddJwt();
         }
         public static void UseInfrastructure(this IApplicationBuilder builder)
@@ -94,11 +94,8 @@ namespace VA.Infrastructure
 
             return services;
         }
-        public static IServiceCollection AddMediator(this IServiceCollection services, Assembly assembly) 
+        public static IServiceCollection AddMediator(this IServiceCollection services) 
         {
-            services.AddMediatR(assembly);
-            services.AddValidatorsFromAssembly(assembly);
-
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
 
