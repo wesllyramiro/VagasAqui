@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using NetDevPack.Security.Jwt.Model;
 using NetDevPack.Security.Jwt.Store.EntityFrameworkCore;
-using System;
 using VA.Domain;
 using VA.Infrastructure.Data.Identity;
 using VA.Infrastructure.Extensions;
@@ -13,7 +11,7 @@ namespace VA.Infrastructure.Data
 {
     public class ApplicationContext : IdentityDbContext<IdentityUser, IdentityRole, string>, ISecurityKeyContext
     {
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
+        public ApplicationContext(DbContextOptions options) : base(options) { }
 
         public DbSet<Candidato> Candidato { get; set; }
         public DbSet<Cidade> Cidade { get; set; }
@@ -30,13 +28,6 @@ namespace VA.Infrastructure.Data
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<SecurityKeyWithPrivate> SecurityKeys { get; set; }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder
-        //        .UseSqlServer("Server=localhost,1433;Database=vagas_aqui;User ID=sa;Password=1q2w3e4r@#$")
-        //        .LogTo(Console.WriteLine, LogLevel.Information)
-        //        .EnableSensitiveDataLogging();
-        //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
