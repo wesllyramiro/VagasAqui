@@ -33,7 +33,7 @@ namespace VA.API
                 .AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
-            services.AddInfrastructure();
+            services.AddInfrastructure(typeof(Startup).Assembly);
 
             services.AddSwaggerGen(c =>
             {

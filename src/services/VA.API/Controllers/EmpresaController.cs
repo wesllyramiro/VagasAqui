@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using VA.Application.UseCase.Commands;
 
 namespace VA.API.Controllers
 {
@@ -7,12 +10,21 @@ namespace VA.API.Controllers
     [Route("api/[Controller]")]
     public class EmpresaController : ControllerBase
     {
+        private readonly IMediator _mediator;
+
+        public EmpresaController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
         [HttpPost]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult CriarEmpresa() 
+        public async Task<IActionResult> CriarEmpresa(string empresa) 
         {
-            return Ok();
+            var command = new CriarEmpresaCommand(empresa);
+            var id = await _mediator.Send(command);
+
+            return Ok(id);
         }
     }
 }

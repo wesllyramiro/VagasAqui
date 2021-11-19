@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,18 +11,21 @@ using NetDevPack.Security.Jwt.Store.EntityFrameworkCore;
 using NetDevPack.Security.JwtExtensions;
 using System;
 using System.Net.Http;
+using System.Reflection;
 using VA.Infrastructure.Data;
 using VA.Infrastructure.Data.Identity;
+using VA.Infrastructure.PipelineBehaviours;
 
 namespace VA.Infrastructure
 {
     public static class InfrastructureModule
     {
-        public static void AddInfrastructure(this IServiceCollection services) 
+        public static void AddInfrastructure(this IServiceCollection services, Assembly assembly) 
         {
             services
                 .AddApplicationDbContext()
                 .AddIdentity()
+                .AddMediator(assembly)
                 .AddJwt();
         }
         public static void UseInfrastructure(this IApplicationBuilder builder)
@@ -68,6 +73,8 @@ namespace VA.Infrastructure
                        .LogTo(Console.WriteLine, LogLevel.Information)
                        .EnableSensitiveDataLogging());
 
+            services.AddScoped<IApplicationContext>(provider => provider.GetService<ApplicationContext>());
+
             return services;
         }
 
@@ -84,6 +91,16 @@ namespace VA.Infrastructure
                 x.SaveToken = true;
                 x.SetJwksOptions(new JwkOptions("https://localhost:5001/jwks"));
             });
+
+            return services;
+        }
+        public static IServiceCollection AddMediator(this IServiceCollection services, Assembly assembly) 
+        {
+            services.AddMediatR(assembly);
+            services.AddValidatorsFromAssembly(assembly);
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
 
             return services;
         }

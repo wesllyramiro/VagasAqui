@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NetDevPack.Security.Jwt.Model;
 using NetDevPack.Security.Jwt.Store.EntityFrameworkCore;
+using System.Threading.Tasks;
 using VA.Domain;
 using VA.Infrastructure.Data.Identity;
 using VA.Infrastructure.Extensions;
 
 namespace VA.Infrastructure.Data
 {
-    public class ApplicationContext : IdentityDbContext<IdentityUser, IdentityRole, string>, ISecurityKeyContext
+    public class ApplicationContext : IdentityDbContext<IdentityUser, IdentityRole, string>, ISecurityKeyContext, IApplicationContext
     {
         public ApplicationContext(DbContextOptions options) : base(options) { }
 
@@ -28,6 +29,10 @@ namespace VA.Infrastructure.Data
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<SecurityKeyWithPrivate> SecurityKeys { get; set; }
 
+        public async Task<int> SaveChangesAsync()
+        {
+            return await base.SaveChangesAsync();
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
