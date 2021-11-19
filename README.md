@@ -15,6 +15,7 @@ Server=localhost,1433;Database=vagas_aqui;User ID=sa;Password=1q2w3e4r@#$
 
 ## Migrations
 
+#### Instale as ferramentas de EF Core como uma ferramenta global e exclua o banco de dados
 dotnet tool install --global dotnet-ef --version 5.0.3
 
 #### Criando primeira migração
