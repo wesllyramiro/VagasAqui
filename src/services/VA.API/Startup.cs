@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using System;
-using VA.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using VA.Application;
+using VA.Infrastructure;
 
-namespace VA.API
+namespace VA.WebApi
 {
     public class Startup
     {
@@ -21,57 +19,28 @@ namespace VA.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(
-               options => options.AddPolicy(
-                   "AllowAll", p =>
-                   {
-                       p.AllowAnyOrigin();
-                       p.AllowAnyMethod();
-                       p.AllowAnyHeader();
-                   }));
-
             services
-                .AddControllers()
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
-
-            services.AddInfrastructure();
-            services.AddApplication();
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo()
-                {
-                    Title = "Vagas Aqui",
-                    Description = "Vagas Aqui",
-                    Contact = new OpenApiContact() { Name = "Weslly Ramiro", Email = "wesllyramiro@gmail.com" },
-                    License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }
-                });
-            });
+                .AddInfraCors()
+                .AddInfraControllers()
+                .AddInfraSwagger()
+                .AddInfraVersioning()
+                .AddApplicationDbContext()
+                .AddIdentity()
+                .AddMediator()
+                .AddJwt()
+                .AddApplication()
+                .AddGlobalException();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
-            app.UseCors("AllowAll");
-
-            if (env.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-                });
-
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseRouting();
-
-            app.UseInfrastructure();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app
+               .UseCors("AllowAll")
+               .UseGlobalException()
+               .UseSwagger(env, provider)
+               .UseRouting()
+               .UseAuth()
+               .UseEndpoints(opt => opt.MapControllers());
         }
     }
 }

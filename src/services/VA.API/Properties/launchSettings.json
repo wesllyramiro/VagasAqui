@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "VA.API": {
+    "VA.WebApi": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

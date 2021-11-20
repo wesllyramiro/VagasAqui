@@ -1,40 +1,35 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NetDevPack.Security.Jwt;
 using NetDevPack.Security.Jwt.Store.EntityFrameworkCore;
 using NetDevPack.Security.JwtExtensions;
 using System;
 using System.Net.Http;
-using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using VA.Infrastructure.Data;
 using VA.Infrastructure.Data.Identity;
+using VA.Infrastructure.Middleware;
 using VA.Infrastructure.PipelineBehaviours;
+using VA.Infrastructure.Swagger;
+
 
 namespace VA.Infrastructure
 {
     public static class InfrastructureModule
     {
-        public static void AddInfrastructure(this IServiceCollection services) 
-        {
-            services
-                .AddApplicationDbContext()
-                .AddIdentity()
-                .AddMediator()
-                .AddJwt();
-        }
-        public static void UseInfrastructure(this IApplicationBuilder builder)
-        {
-            builder
-                .UseAuthConfiguration();
-        }
-
-        private static IServiceCollection AddIdentity(this IServiceCollection services) 
+        public static IServiceCollection AddIdentity(this IServiceCollection services) 
         {
             services
                 .AddIdentity<IdentityUser, IdentityRole>(
@@ -63,7 +58,7 @@ namespace VA.Infrastructure
             return services;
         }
 
-        private static IServiceCollection AddApplicationDbContext(this IServiceCollection services)
+        public static IServiceCollection AddApplicationDbContext(this IServiceCollection services)
         {
             services
                .AddDbContext<ApplicationContext>(
@@ -101,11 +96,110 @@ namespace VA.Infrastructure
 
             return services;
         }
+        public static IServiceCollection AddInfraCors(this IServiceCollection services) 
+        {
+            services
+               .AddCors(options => options.AddPolicy(
+                  "AllowAll", p =>
+                  {
+                      p.AllowAnyOrigin();
+                      p.AllowAnyMethod();
+                      p.AllowAnyHeader();
+                  }));
 
-        public static IApplicationBuilder UseAuthConfiguration(this IApplicationBuilder app)
+            return services;
+        }
+        public static IServiceCollection AddInfraControllers(this IServiceCollection services)
+        {
+            services
+                .AddControllers()
+                .AddJsonOptions(opt =>
+                {
+                    opt.JsonSerializerOptions.IgnoreNullValues = true;
+                    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(namingPolicy: JsonNamingPolicy.CamelCase));
+                })
+                .ConfigureApiBehaviorOptions(opt =>
+                {
+                    opt.ClientErrorMapping[StatusCodes.Status400BadRequest].Link = "https://httpstatuses.com/400";
+                    opt.ClientErrorMapping[StatusCodes.Status401Unauthorized].Link = "https://httpstatuses.com/401";
+                    opt.ClientErrorMapping[StatusCodes.Status403Forbidden].Link = "https://httpstatuses.com/403";
+                    opt.ClientErrorMapping[StatusCodes.Status404NotFound].Link = "https://httpstatuses.com/404";
+                    opt.ClientErrorMapping[StatusCodes.Status406NotAcceptable].Link = "https://httpstatuses.com/406";
+                    opt.ClientErrorMapping[StatusCodes.Status500InternalServerError].Link = "https://httpstatuses.com/500";
+                });
+
+            return services;
+        }
+        public static IServiceCollection AddInfraSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen();
+
+            services.ConfigureOptions<ConfigureSwaggerOptions>();
+
+            return services;
+        }
+        public static IServiceCollection AddInfraVersioning(this IServiceCollection services)
+        {
+            services.AddApiVersioning(o =>
+            {
+                o.UseApiBehavior = false;
+                o.ReportApiVersions = true;
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+
+                o.ApiVersionReader = ApiVersionReader.Combine(
+                    new HeaderApiVersionReader("x-api-version"),
+                    new QueryStringApiVersionReader(),
+                    new UrlSegmentApiVersionReader());
+            });
+
+            services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
+
+
+            return services;
+        }
+        public static IServiceCollection AddGlobalException(this IServiceCollection services)
+        {
+            services.AddTransient<ExceptionMiddleware>();
+
+            return services;
+        }
+
+        public static IApplicationBuilder UseAuth(this IApplicationBuilder app)
         {
             app.UseAuthentication();
             app.UseAuthorization();
+
+            return app;
+        }
+        public static IApplicationBuilder UseSwagger(this IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseSwagger(c =>
+                {
+                    c.SerializeAsV2 = true;
+                });
+                app.UseSwaggerUI(options =>
+                {
+                    foreach (var description in provider.ApiVersionDescriptions)
+                    {
+                        options.SwaggerEndpoint($"../swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                    }
+                });
+
+                app.UseDeveloperExceptionPage();
+            }
+
+            return app;
+        }
+        public static IApplicationBuilder UseGlobalException(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ExceptionMiddleware>();
 
             return app;
         }

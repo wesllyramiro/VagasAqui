@@ -7,10 +7,12 @@ namespace VA.Application
 {
     public static class ApplicationModule
     {
-        public static void AddApplication(this IServiceCollection services)
+        public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+            return services;
         }
     }
 }

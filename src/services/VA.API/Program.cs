@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace VA.API
+namespace VA.WebApi
 {
     public class Program
     {

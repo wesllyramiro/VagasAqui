@@ -8,6 +8,8 @@ namespace VA.Infrastructure.Data
     {
         DbSet<Empresa> Empresa { get; set; }
         DbSet<Estado> Estado { get; set; }
+        public DbSet<Cidade> Cidade { get; set; }
+
         Task<int> SaveChangesAsync();
     }
 }

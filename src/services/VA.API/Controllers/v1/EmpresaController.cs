@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using VA.Application.UseCase.Commands;
 
-namespace VA.API.Controllers
+namespace VA.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/v1/[Controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[Controller]")]
     public class EmpresaController : ControllerBase
     {
         private readonly IMediator _mediator;

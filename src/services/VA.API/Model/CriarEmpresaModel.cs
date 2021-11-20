@@ -1,4 +1,4 @@
-﻿namespace VA.API.Model
+﻿namespace VA.WebApi.Model
 {
     public class CriarEmpresaModel
     {

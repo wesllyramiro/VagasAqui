@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace VA.API.Controllers
+namespace VA.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[Controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[Controller]")]
     public class AuthController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;

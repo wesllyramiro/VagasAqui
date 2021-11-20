@@ -12,6 +12,8 @@
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.9">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25,9 +27,14 @@
 		<PackageReference Include="NetDevPack.Security.Jwt" Version="5.0.16" />
 		<PackageReference Include="NetDevPack.Security.Jwt.Store.EntityFrameworkCore" Version="5.0.16" />
 		<PackageReference Include="NetDevPack.Security.JwtExtensions" Version="5.0.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\VA.Domain\VA.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Versioning\" />
 	</ItemGroup>
 </Project>
