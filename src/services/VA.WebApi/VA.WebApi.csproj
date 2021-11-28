@@ -5,11 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\VA.Application\VA.Application.csproj" />
-    <ProjectReference Include="..\VA.Infrastructure\VA.Infrastructure.csproj" />
+    <ProjectReference Include="..\VA.Infrastructure.CrossCutting\VA.Infrastructure.CrossCutting.csproj" />
+    <ProjectReference Include="..\VA.Infrastructure.Data\VA.Infrastructure.Data.csproj" />
   </ItemGroup>
 
 </Project>

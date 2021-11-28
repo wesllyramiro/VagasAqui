@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using VA.Application.UseCase.Commands;
-using VA.Application.UseCase.CriarCidade;
+using VA.Application.UseCase.Commands.CriarCidade;
+using VA.Application.UseCase.Commands.CriarEmpresa;
 using VA.Application.UseCase.Queries.BuscarCidade;
-using VA.Infrastructure.Shared;
+using VA.Infrastructure.CrossCutting.Shared;
 
 namespace VA.WebApi.Controllers
 {
@@ -37,12 +37,20 @@ namespace VA.WebApi.Controllers
         public async Task<IActionResult> CriarCidade(int idEstado, string nome)
         {
             var command = new CriarCidadeCommand(nome, idEstado);
-            var id = await _mediator.Send(command);
+            var outPut = await _mediator.Send(command);
 
-            return CreatedAtAction(nameof(BuscarCidade), routeValues: new {
-                idEstado,
-                idCidade = id
-            }, id);
+
+            if (outPut.IsValid)
+            {
+                int id = outPut.GetResult();
+                return CreatedAtAction(nameof(BuscarCidade), routeValues: new
+                {
+                    idEstado,
+                    idCidade = id
+                }, id);
+            }
+
+            return Ok(new Response(outPut.GetResult()));
         }
         [HttpGet]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
@@ -51,12 +59,19 @@ namespace VA.WebApi.Controllers
         public async Task<IActionResult> BuscarCidade(int idEstado, int idCidade)
         {
             var query = new BuscarCidadeQuery(idEstado, idCidade);
-            var cidade = await _mediator.Send(query);
+            var output = await _mediator.Send(query);
 
-            if (cidade == null)
-                return NotFound();
+            if (output.IsValid)
+            {
+                var cidade = output.GetResult();
 
-            return Ok(new Response(cidade));
+                if (cidade == null)
+                    return NotFound();
+
+                return Ok(new Response(cidade));
+            }
+
+            return BadRequest(new Response(output.ErrorMessages));
         }
     }
 }

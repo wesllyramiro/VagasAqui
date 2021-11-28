@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 using VA.Domain;
+using VA.Infrastructure.CrossCutting.Shared;
 using VA.Infrastructure.Data;
 
 namespace VA.Application.UseCase.Queries.BuscarCidade
 {
-    public class BuscarCidadeHandler : IRequestHandler<BuscarCidadeQuery, Cidade>
+    public class BuscarCidadeHandler : IRequestHandler<BuscarCidadeQuery, Output<Cidade>>
     {
         private readonly IApplicationContext _context;
 
@@ -16,13 +17,13 @@ namespace VA.Application.UseCase.Queries.BuscarCidade
             _context = context;
         }
 
-        public async Task<Cidade> Handle(BuscarCidadeQuery request, CancellationToken cancellationToken)
+        public async Task<Output<Cidade>> Handle(BuscarCidadeQuery request, CancellationToken cancellationToken)
         {
             var cidade = await _context.Cidade.FirstOrDefaultAsync(cidade => cidade.EstadoId == request.IdEstado
                                                                 && cidade.Id == request.IdCidade,
                                                   cancellationToken).ConfigureAwait(false);
 
-            return cidade;
+            return new Output<Cidade>(cidade);
         }
     }
 }

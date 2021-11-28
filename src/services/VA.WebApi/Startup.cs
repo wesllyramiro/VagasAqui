@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VA.Application;
-using VA.Infrastructure;
+using VA.Infrastructure.CrossCutting;
+using VA.Infrastructure.Data;
 
 namespace VA.WebApi
 {
@@ -20,27 +21,26 @@ namespace VA.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddInfraCors()
                 .AddInfraControllers()
+                .AddInfraCors()
                 .AddInfraSwagger()
                 .AddInfraVersioning()
                 .AddApplicationDbContext()
                 .AddIdentity()
                 .AddMediator()
                 .AddJwt()
-                .AddApplication()
-                .AddGlobalException();
+                .AddApplication();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
             app
-               .UseCors("AllowAll")
-               .UseGlobalException()
-               .UseSwagger(env, provider)
-               .UseRouting()
-               .UseAuth()
-               .UseEndpoints(opt => opt.MapControllers());
+              .UseGlobalException()
+              .UseCors("AllowAll")
+              .UseSwagger(env, provider)
+              .UseRouting()
+              .UseAuth()
+              .UseEndpoints(opt => opt.MapControllers());
         }
     }
 }

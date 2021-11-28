@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using VA.Domain;
+using VA.Infrastructure.CrossCutting.Shared;
 
 namespace VA.Application.UseCase.Queries.BuscarCidade
 {
-    public class BuscarCidadeQuery : IRequest<Cidade>
+    public class BuscarCidadeQuery : IRequest<Output<Cidade>>
     {
         public BuscarCidadeQuery(int idEstado, int idCidade)
         {

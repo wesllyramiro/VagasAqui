@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using VA.Application.UseCase.Commands;
+using VA.Application.UseCase.Commands.CriarEmpresa;
+using VA.Infrastructure.CrossCutting.Shared;
 
 namespace VA.WebApi.Controllers
 {
@@ -23,9 +24,14 @@ namespace VA.WebApi.Controllers
         public async Task<IActionResult> CriarEmpresa(string empresa) 
         {
             var command = new CriarEmpresaCommand(empresa);
-            var id = await _mediator.Send(command);
+            var outPut = await _mediator.Send(command);
 
-            return Ok(id);
+            if (!outPut.IsValid) 
+            {
+                return BadRequest(new Response(outPut.ErrorMessages));
+            }
+
+            return Ok(new Response(outPut.GetResult()));
         }
     }
 }

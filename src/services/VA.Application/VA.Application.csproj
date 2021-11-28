@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -6,7 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VA.Domain\VA.Domain.csproj" />
-    <ProjectReference Include="..\VA.Infrastructure\VA.Infrastructure.csproj" />
+    <ProjectReference Include="..\VA.Infrastructure.CrossCutting\VA.Infrastructure.CrossCutting.csproj" />
+    <ProjectReference Include="..\VA.Infrastructure.Data\VA.Infrastructure.Data.csproj" />
   </ItemGroup>
 
 </Project>
