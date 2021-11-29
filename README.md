@@ -27,4 +27,4 @@ dotnet ef migrations add first-migration -p .\VA.Infrastructure.csproj -o .\Data
 dotnet ef migrations script -p .\VA.Infrastructure.csproj -o .\Data\Migrations\Scipts\first-migration.sql -i
 
 #### Aplicando migração ao banco 
-dotnet ef database update -p .\VA.Infrastructure.csproj -v
+dotnet ef database update -p .\VA.Infrastructure.Data.csproj -v
